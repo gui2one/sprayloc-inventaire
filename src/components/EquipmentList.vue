@@ -1,5 +1,5 @@
 <template>
-  <div id="main_container">
+  <div id="main_container" ref="main_container">
     <md-dialog-confirm
       :md-active.sync="modal_active"
       md-title="Remove Item"
@@ -32,8 +32,16 @@
       <!-- <md-field md-clearable>
         <md-input placeholder="Search by name..." v-model="search" @input="searchOnTable" />
       </md-field> -->
-      <md-table v-model="searched" md-sort="id" md-sort-order="asc" md-card md-fixed-header>
-        <md-table-row slot="md-table-row" slot-scope="{ item }">
+      <md-table
+        class="table-list"
+        ref="table-list"
+        v-model="searched"
+        md-sort="id"
+        md-sort-order="asc"
+        md-fixed-header
+        @md-selected="onSelect"
+      >
+        <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple">
           <md-table-cell md-label="ID" md-sort-by="id">{{ item.id }}</md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="json_data.name">{{ item.json_data.name }}</md-table-cell>
           <md-table-cell md-label="Description" md-sort-by="json_data.desc">{{ item.json_data.desc }}</md-table-cell>
@@ -79,6 +87,7 @@ const searchByName = (items, term) => {
 
 let unsubscribe = null;
 import { mapActions, mapState } from "vuex";
+// import { nextTick } from "vue";
 import EquipmentCard from "./EquipmentCard.vue";
 export default {
   name: "EquipmentList",
@@ -90,6 +99,7 @@ export default {
       localItems: [],
       modal_active: false,
       remove_id: -1,
+      content_height: 500,
     };
   },
   components: { EquipmentCard },
@@ -132,12 +142,19 @@ export default {
       // console.log(this.items);
       this.searched = searchByName(this.items, this.search);
     },
-    onCancel() {},
+    onCancel() {
+      this.remove_id = -1;
+    },
     onConfirmDelete() {
       this.$store.dispatch("removeItem", this.remove_id);
       this.remove_id = -1;
     },
     sortByID() {},
+    onSelect(selected_items) {
+      for (let item of selected_items) {
+        console.log(item.id);
+      }
+    },
   },
   mounted() {
     this.searched = this.items;
@@ -155,8 +172,16 @@ export default {
         });
         // unsubscribe();
       }
-      // you may call unsubscribe to stop the subscription
-      // unsubscribe();
+    });
+
+    this.$nextTick(function() {
+      let vm = this;
+      window.addEventListener("resize", function() {
+        // console.log(vm.$refs["table-list"]);
+        //dirty hack to prevent table bad width resizing (i.e : showing a horizontal scrollbar)
+        vm.$refs["table-list"].fixedHeaderTableWidth = 0;
+        console.log(vm.$refs["table-list"].$el.getBoundingClientRect().height);
+      });
     });
   },
   destroyed() {
@@ -165,6 +190,7 @@ export default {
   },
   updated() {
     // this.localItems = this.items.sort((A, B) => A.id - B.id);
+    this.content_height = window.innerHeight;
   },
   watch: {
     searched: function() {
@@ -195,11 +221,12 @@ export default {
 #main_container {
   display: flex;
   flex-direction: column;
-  // align-items: flex-end;
-  flex-basis: 1;
-  // padding: 0 1em;
   max-width: 1200px;
   margin: 0 auto;
+
+  .table-list {
+    // width: 95% !important;
+  }
 
   h3 {
     width: 100%;

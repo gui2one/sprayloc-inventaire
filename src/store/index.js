@@ -18,14 +18,14 @@ export default new Vuex.Store({
       state.isLoggedIn = true;
     },
     setItems(state, payload) {
-      // let sorted = payload.sort(function(valueA, valueB) {
-      //   // console.log(valueA.id, valueB.id);
-      //   return parseInt(valueA.id) - parseInt(valueB.id);
-      // });
-      state.items = payload;
+      let sorted = payload.sort(function(valueA, valueB) {
+        // console.log(valueA.id, valueB.id);
+        return parseInt(valueA.id) - parseInt(valueB.id);
+      });
+      state.items = sorted;
 
-      console.log(typeof payload[0].id);
-      console.log("%c setItems MUTATION ", "background: darkgreen; color: white", payload);
+      console.log(typeof sorted[0].id);
+      console.log("%c setItems MUTATION ", "background: darkgreen; color: white", sorted);
     },
     setCurrentID(state, payload) {
       state.currentID = payload;
@@ -111,6 +111,22 @@ export default new Vuex.Store({
 
       console.log(data);
       // context.dispatch("loadMysqlData");
+    },
+
+    async uploadImages(context, files) {
+      let formData = new FormData();
+      let inc = 0;
+      for (let file of files) {
+        formData.append("file_" + inc, file);
+        inc++;
+      }
+      await fetch("/php/upload_images.php", {
+        method: "POST",
+        body: formData,
+      });
+
+      // const data = await response.text();
+      // console.log(data);
     },
   },
   getters: {

@@ -5,6 +5,9 @@
       <p v-else>Login To View the Data</p>
       <!-- <div v-for="item in items" :key="item.name">{{ item.data.name }}</div> -->
     </div>
+    <div v-else>
+      <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
+    </div>
   </div>
 </template>
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "npx live-server ./dist --ignore=./dist/uploads",
+    "serve": "npx live-server ./dist --ignore=./uploads",
     "build": "vue-cli-service build --watch",
     "lint": "vue-cli-service lint"
   },
