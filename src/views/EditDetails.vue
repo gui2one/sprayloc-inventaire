@@ -15,11 +15,11 @@
       <md-field>
         <md-file v-model="image_path" multiple accept="image/*" @md-change="onFileInput"></md-file>
       </md-field>
-      <div id="images-list">
+      <!-- <div id="images-list">
         <div v-for="(img, index) in images" :key="index">
           <label>{{ img }}</label>
         </div>
-      </div>
+      </div> -->
 
       <ImageList :images="images" />
       <div>
@@ -46,9 +46,13 @@ export default {
     };
   },
 
+  created() {
+    this.images = this.currentItem.json_data.images;
+  },
   mounted() {
     // this.$store.dispatch("setCurrentID", this.$route.params.id);
     this.setCurrentID(this.$route.params.id);
+    this.currentItem;
     // this.name = this.currentItem.json_data.name;
   },
   updated() {

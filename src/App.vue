@@ -1,8 +1,11 @@
 <template>
   <div id="app">
     <Header />
-    <div id="main-wrapper">
+    <div v-if="$auth.isAuthenticated" id="main-wrapper">
       <router-view />
+    </div>
+    <div v-else>
+      <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </div>
   </div>
 </template>

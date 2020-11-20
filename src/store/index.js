@@ -12,6 +12,7 @@ export default new Vuex.Store({
     items: [],
     currentID: 0,
     currentItem: {},
+    images: [],
   },
   mutations: {
     login(state) {
@@ -20,24 +21,25 @@ export default new Vuex.Store({
     setItems(state, payload) {
       let sorted = payload.sort(function(valueA, valueB) {
         // console.log(valueA.id, valueB.id);
-        return parseInt(valueA.id) - parseInt(valueB.id);
+        return parseInt(valueB.id) - parseInt(valueA.id);
       });
       state.items = sorted;
-
-      console.log(typeof sorted[0].id);
-      console.log("%c setItems MUTATION ", "background: darkgreen; color: white", sorted);
+      // console.log("%c setItems MUTATION ", "background: darkgreen; color: white", sorted);
     },
     setCurrentID(state, payload) {
       state.currentID = payload;
-      console.log("%c setCurrentID MUTATION ", "background: darkgreen; color: white", payload);
+      // console.log("%c setCurrentID MUTATION ", "background: darkgreen; color: white", payload);
     },
     setCurrentItem(state, payload) {
       state.currentItem = payload;
-      console.log("%c setCurrentItem MUTATION ", "background: darkgreen; color: white", payload);
+      // console.log("%c setCurrentItem MUTATION ", "background: darkgreen; color: white", payload);
     },
     setLoaded(state) {
       state.isDataLoaded = true;
-      console.log(state.isDataLoaded);
+      // console.log(state.isDataLoaded);
+    },
+    setImages(state, payload) {
+      state.images = payload;
     },
   },
   actions: {
@@ -74,28 +76,27 @@ export default new Vuex.Store({
     async addItem(context, item_data) {
       let formData = new FormData();
       formData.append("json_data", JSON.stringify(item_data));
-      const response = await fetch("/php/item_add.php", {
+      // const response =
+      await fetch("/php/item_add.php", {
         data: formData,
       });
-      const data = await response.text();
+      // const data = await response.text();
 
-      console.log(data);
+      // console.log(data);
       context.dispatch("loadMysqlData");
-      // window.location.reload();
     },
 
     async removeItem(context, item_sql_id) {
       let formData = new FormData();
       formData.append("id", item_sql_id);
-      const response = await fetch("/php/item_remove.php", {
+      // const response =
+      await fetch("/php/item_remove.php", {
         method: "POST",
         body: formData,
       });
-      const data = await response.text();
-
-      console.log(data);
+      // const data = await response.text();
+      // console.log(data);
       context.dispatch("loadMysqlData");
-      // window.location.reload();
     },
 
     async updateItem(context, payload) {
@@ -103,14 +104,13 @@ export default new Vuex.Store({
       let formData = new FormData();
       formData.append("id", payload.id);
       formData.append("json_data", payload.json_data);
-      const response = await fetch("/php/item_update.php", {
+      // const response =
+      await fetch("/php/item_update.php", {
         method: "POST",
         body: formData,
       });
-      const data = await response.text();
-
-      console.log(data);
-      // context.dispatch("loadMysqlData");
+      // const data = await response.text();
+      // console.log(data);
     },
 
     async uploadImages(context, files) {
@@ -125,8 +125,18 @@ export default new Vuex.Store({
         body: formData,
       });
 
-      // const data = await response.text();
-      // console.log(data);
+      context.dispatch("loadImagesFromDir");
+    },
+
+    async loadImagesFromDir(context) {
+      const response = await fetch("/php/read_upload_dir.php", {
+        method: "POST",
+      });
+
+      const data = await response.json();
+
+      this.files = data;
+      context.commit("setImages", data);
     },
   },
   getters: {

@@ -57,11 +57,11 @@ if ($conn->connect_errno) {
 			$title = str_replace("_"," ",basename($targetPath,".".$info['extension']));
 			//echo "\nTitle -->".$title;
 
-			$query = mysql_query("INSERT INTO gallery_items  (title,url, thumbnail, width, height) VALUES ('".$title."','".$_FILES['image'.$i]['name']."', '".basename($image_dest)."',".$width.",".$height.")");
+			// $query = mysql_query("INSERT INTO gallery_items  (title,url, thumbnail, width, height) VALUES ('".$title."','".$_FILES['image'.$i]['name']."', '".basename($image_dest)."',".$width.",".$height.")");
 			
 		}
 	
-	if($query){
+	if($title){
 		
 		echo "\nok --> add gellery item";
 	}else{
@@ -80,7 +80,7 @@ function imagethumb( $image_src , $image_dest = NULL , $max_size = 500, $expand 
 	// Récupère les infos de l'image
 	$fileinfo = getimagesize($image_src);
 
-	echo "file infos :".$fileinfo;
+	echo "file infos :".$fileinfo[0]."---".$fileinfo[1];
 	
 	if( !$fileinfo ) return FALSE;
 

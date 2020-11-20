@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <div v-if="!$auth.loading">
-      <EquipmentList v-if="$auth.isAuthenticated" />
-      <p v-else>Login To View the Data</p>
+      <EquipmentList />
+      <!-- <p v-else>Login To View the Data</p> -->
       <!-- <div v-for="item in items" :key="item.name">{{ item.data.name }}</div> -->
     </div>
     <div v-else>

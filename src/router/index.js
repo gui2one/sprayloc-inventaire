@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Profile from "../views/Profile.vue";
 import EditDetails from "../views/EditDetails.vue";
+import UploadsView from "../views/UploadsView.vue";
 
 Vue.use(VueRouter);
 
@@ -34,6 +35,11 @@ const routes = [
     path: "/edit/:id",
     name: "edit",
     component: EditDetails,
+  },
+  {
+    path: "/files",
+    name: "files",
+    component: UploadsView,
   },
 ];
 

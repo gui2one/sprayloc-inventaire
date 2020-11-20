@@ -162,11 +162,11 @@ export default {
       this.view_mode = window.localStorage.getItem("view_mode");
     }
 
-    console.log(this.$store);
+    // console.log(this.$store);
     unsubscribe = this.$store.subscribe((mutation) => {
       if (mutation.type == "setItems") {
-        console.log(mutation.type);
-        console.log(mutation.payload);
+        // console.log(mutation.type);
+        // console.log(mutation.payload);
         this.searched = this.items.sort(function(A, B) {
           return A.id - B.id;
         });
@@ -180,7 +180,7 @@ export default {
         // console.log(vm.$refs["table-list"]);
         //dirty hack to prevent table bad width resizing (i.e : showing a horizontal scrollbar)
         vm.$refs["table-list"].fixedHeaderTableWidth = 0;
-        console.log(vm.$refs["table-list"].$el.getBoundingClientRect().height);
+        // console.log(vm.$refs["table-list"].$el.getBoundingClientRect().height);
       });
     });
   },
@@ -203,16 +203,9 @@ export default {
 
       return items;
     },
-
-    // items: function() {
-    //   return this.items;
-    // },
   },
   computed: {
     ...mapState(["items"]),
-    // localItems() {
-    //   return this.items;
-    // },
   },
 };
 </script>
