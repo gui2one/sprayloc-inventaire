@@ -37,8 +37,8 @@
         ref="table-list"
         v-model="searched"
         md-sort="id"
-        md-sort-order="asc"
         md-fixed-header
+        md-sort-order="asc"
         @md-selected="onSelect"
       >
         <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple">
@@ -89,6 +89,7 @@ let unsubscribe = null;
 import { mapActions, mapState } from "vuex";
 // import { nextTick } from "vue";
 import EquipmentCard from "./EquipmentCard.vue";
+
 export default {
   name: "EquipmentList",
   data() {
@@ -100,6 +101,8 @@ export default {
       modal_active: false,
       remove_id: -1,
       content_height: 500,
+      resize_event: null,
+      handle_resize: null,
     };
   },
   components: { EquipmentCard },
@@ -155,6 +158,10 @@ export default {
         console.log(item.id);
       }
     },
+
+    handleResize() {
+      if (this.view_mode == "list") this.$refs["table-list"].fixedHeaderTableWidth = 0;
+    },
   },
   mounted() {
     this.searched = this.items;
@@ -174,20 +181,20 @@ export default {
       }
     });
 
+    let vm = this;
+    this.handleResize = function() {
+      if (vm.view_mode == "list") vm.$refs["table-list"].fixedHeaderTableWidth = 0;
+    };
     this.$nextTick(function() {
-      let vm = this;
-      window.addEventListener("resize", function() {
-        // console.log(vm.$refs["table-list"]);
-        //dirty hack to prevent table bad width resizing (i.e : showing a horizontal scrollbar)
-        vm.$refs["table-list"].fixedHeaderTableWidth = 0;
-        // console.log(vm.$refs["table-list"].$el.getBoundingClientRect().height);
-      });
+      this.resize_event = window.addEventListener("resize", this.handleResize);
     });
   },
-  destroyed() {
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
     unsubscribe();
-    console.log("destroyed");
+    // console.log("destroyed");
   },
+
   updated() {
     // this.localItems = this.items.sort((A, B) => A.id - B.id);
     this.content_height = window.innerHeight;

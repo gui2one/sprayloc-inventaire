@@ -93,6 +93,7 @@ router-link {
   // padding: 1em;
   background: white;
   position: absolute;
+  z-index: 10;
   right: 0%;
   // top: 150px;
   // background-color: tomato;

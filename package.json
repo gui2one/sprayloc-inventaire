@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "npx live-server ./dist --ignore=./uploads",
-    "build": "vue-cli-service build --watch",
+    "build": "vue-cli-service build --no-clean --watch",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

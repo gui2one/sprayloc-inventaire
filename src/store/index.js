@@ -134,9 +134,24 @@ export default new Vuex.Store({
       });
 
       const data = await response.json();
-
+      // console.log(data);
       this.files = data;
       context.commit("setImages", data);
+    },
+
+    async deleteFileFromDir(context, payload) {
+      let formData = new FormData();
+      // console.log(payload);
+      formData.append("url", payload);
+      const response = await fetch("/php/delete_file_from_dir.php", {
+        method: "POST",
+        body: formData,
+      });
+
+      const _data = await response.text();
+
+      console.log(_data);
+      context.dispatch("loadImagesFromDir");
     },
   },
   getters: {

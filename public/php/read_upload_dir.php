@@ -24,8 +24,9 @@
 
 	        	// echo nl2br("$entry\n");
 				$thumbFullPath = "https://".$httpHost."/uploads/".$entry;
+				$thumbLocalPath = $rootDir."/uploads/".$entry;
 				// echo nl2br($thumbFullPath."\n");
-	        	array_push($thumbFiles, $thumbFullPath);
+	        	array_push($thumbFiles, array( 'url' => $thumbFullPath, 'date' => filectime($thumbLocalPath)));
 	        	// echo nl2br(str_replace("_thumbnail", "",$entry)."\n");
 	        	array_push($imgFiles, str_replace("_thumbnail", "",$thumbFullPath));
 	    		
