@@ -18,7 +18,7 @@ Vue.use(Auth0Plugin, {
   },
 });
 
-Vue.config.productionTip = false;
+Vue.config.productionTip = true;
 
 new Vue({
   router,

@@ -1,10 +1,10 @@
 <template>
   <div>
-    <draggable v-model="list" tag="ul" :move="onMove" @start="onDragStart">
+    <draggable id="draggable" v-model="list" tag="ul" :move="onMove" @start="onDragStart">
       <!-- <div class="draggable-item" v-for="image in images" :key="image">{{ image.name }}</div> -->
       <div v-for="(image, index) in list" :key="index">
-        <p>{{ image }}</p>
-        <ImageListItem />
+        <!-- <p>{{ image }}</p> -->
+        <ImageListItem :url="image" />
         <md-button class="md-icon-button md-accent md-raised" @click="onDelete(index)">
           <md-icon>delete</md-icon>
         </md-button>
@@ -51,6 +51,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#draggable {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
 .draggable-item {
   user-select: none;
 }

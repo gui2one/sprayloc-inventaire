@@ -16,7 +16,15 @@
     </md-button>
 
     <div class="cards-container">
-      <UploadManagerImageCard v-for="(file, index) in images" :key="index" :file="file" @delete-image="onDelete" />
+      <UploadManagerImageCard
+        v-for="(image, index) in images"
+        :key="index"
+        :image="image"
+        @delete-image="onDelete(image.url)"
+        :selected="null"
+        @click.native.prevent="onSelect(index)"
+        :mode="mode"
+      />
     </div>
   </div>
 </template>
@@ -32,8 +40,11 @@ export default {
       files: [],
       modal_active: false,
       file_to_delete: null,
+      selected: [],
+      // mode: "stand_alone",
     };
   },
+  props: ["mode"],
   mounted() {
     this.loadImagesFromDir();
   },
@@ -45,10 +56,10 @@ export default {
       this.$store.dispatch("uploadImages", event.target.files);
       this.loadImagesFromDir();
     },
-    onDelete(data) {
-      console.log(data);
+    onDelete(url) {
+      // console.log(data);
       this.modal_active = true;
-      this.file_to_delete = data;
+      this.file_to_delete = url;
       // this.onConfirmDelete(data);
     },
     onCancel() {
@@ -57,6 +68,21 @@ export default {
     onConfirmDelete() {
       // console.log(this.file_to_delete);
       this.$store.dispatch("deleteFileFromDir", this.file_to_delete);
+    },
+    onSelect(index) {
+      // console.log(this.selected.length);
+      if (this.selected.find((value) => value == index) == undefined) {
+        this.selected.push(index);
+        let selected_urls = [];
+        this.selected.forEach((value) => {
+          selected_urls.push(this.images[value].url);
+        });
+        this.$emit("select", selected_urls);
+      } else {
+        let array_index = this.selected.findIndex((value) => value === index);
+        this.selected.splice(array_index, 1);
+        // console.log(this.selected.length);
+      }
     },
   },
   watch: {},

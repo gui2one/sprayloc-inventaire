@@ -19,7 +19,11 @@
 
 	    		// echo $entry."\n";
 	    	$pathInfo = pathInfo($entry);
-	    	if( strtoupper($pathInfo["extension"]) == "JPG" || strtoupper($pathInfo["extension"]) == "JPEG" || strtoupper($pathInfo["extension"]) == "PNG" || strtoupper($pathInfo["extension"]) == "GIF" )
+			if( strtoupper($pathInfo["extension"]) == "JPG" || 
+				strtoupper($pathInfo["extension"]) == "JPEG" || 
+				strtoupper($pathInfo["extension"]) == "PNG" || 
+				strtoupper($pathInfo["extension"]) == "GIF" || 
+				strtoupper($pathInfo["extension"]) == "WEBP" )
 	    	{
 
 	        	// echo nl2br("$entry\n");

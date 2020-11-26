@@ -48,18 +48,6 @@ if ($conn->connect_errno) {
 
 		$thumb = imagethumb($image_src, $image_dest,500);
 
-		//echo "THUMB --> ".$thumb."\n";
-
-		// echo basename($image_dest);
-		// end create thumbnail
-		if($thumb){
-
-			$title = str_replace("_"," ",basename($targetPath,".".$info['extension']));
-			//echo "\nTitle -->".$title;
-
-			// $query = mysql_query("INSERT INTO gallery_items  (title,url, thumbnail, width, height) VALUES ('".$title."','".$_FILES['image'.$i]['name']."', '".basename($image_dest)."',".$width.",".$height.")");
-			
-		}
 	
 	if($title){
 		

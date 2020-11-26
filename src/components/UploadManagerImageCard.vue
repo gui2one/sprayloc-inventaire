@@ -1,8 +1,12 @@
 <template>
   <div>
-    <md-card class="image-card">
-      <img :src="file.url" />
-      <md-button class="delete-btn md-raised md-icon-button md-dense md-accent" @click="onClickDelete(file.url)">
+    <md-card class="image-card" :class="selected ? 'selected' : ''" @click.native.prevent="onClick">
+      <img :src="image.url" />
+      <md-button
+        v-if="mode !== 'popup'"
+        class="delete-btn md-raised md-icon-button md-dense md-accent"
+        @click.prevent="onClickDelete(image.url)"
+      >
         <md-icon>delete</md-icon>
       </md-button>
     </md-card>
@@ -11,11 +15,22 @@
 <script>
 export default {
   name: "UploadManagerImageCard",
-  props: ["file"],
+  data() {
+    return {
+      selected: false,
+    };
+  },
+  props: ["image", "mode"],
   methods: {
     onClickDelete(url) {
       this.$emit("delete-image", url);
-      // console.log("clicked delete");
+      console.log(url);
+    },
+    onClick() {
+      console.log(this.mode);
+      if (this.mode !== "stand_alone") {
+        this.selected = !this.selected;
+      }
     },
   },
 };
@@ -47,6 +62,9 @@ export default {
     }
   }
 
+  &.selected {
+    outline: 4px solid lightgreen;
+  }
   &:hover {
     .delete-btn {
       opacity: 0.6;

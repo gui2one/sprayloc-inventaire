@@ -1,6 +1,11 @@
 <template>
   <div v-if="!$auth.loading">
-    <form class="form" @submit.prevent="validateUser">
+    <div v-if="isManagerOn" class="layer">
+      <uploadManager ref="manager" mode="popup" @select="onSelectImages" />
+      <md-button class="md-raised md-primary md-dense" @click="onSaveSelected">Add Selected</md-button>
+      <md-button class="md-raised md-dense" @click="isManagerOn = false">Close</md-button>
+    </div>
+    <form class="form" @submit.prevent="onSaveData">
       <div>Edit ..... {{ $route.params.id }}</div>
 
       <md-field>
@@ -11,16 +16,7 @@
         <label>Description</label>
         <md-input v-model="currentItem.json_data.desc"></md-input>
       </md-field>
-
-      <md-field>
-        <md-file v-model="image_path" multiple accept="image/*" @md-change="onFileInput"></md-file>
-      </md-field>
-      <!-- <div id="images-list">
-        <div v-for="(img, index) in images" :key="index">
-          <label>{{ img }}</label>
-        </div>
-      </div> -->
-
+      <md-button class="md-raised" @click="isManagerOn = true">Add Image</md-button>
       <ImageList :images="images" />
       <div>
         <md-button type="submit" class="md-primary md-raised" :disabled="sending">Save Data</md-button>
@@ -31,37 +27,43 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import ImageList from "@/components/ImageList.vue";
+import UploadManager from "../components/UploadManager.vue";
 export default {
   name: "EditDetails",
   components: {
     ImageList,
+    UploadManager,
   },
   data: () => {
+    UploadManager;
     return {
-      // name: null,
-      // desc: null,
       sending: false,
       images: [],
+      images_temp: [],
       image_path: null,
+      isManagerOn: false,
     };
   },
 
   created() {
     this.images = this.currentItem.json_data.images;
   },
+
   mounted() {
     // this.$store.dispatch("setCurrentID", this.$route.params.id);
     this.setCurrentID(this.$route.params.id);
     this.currentItem;
+
     // this.name = this.currentItem.json_data.name;
   },
   updated() {
+    // console.log(this.$refs["manager"]);
     this.images = this.currentItem.json_data.images;
   },
   methods: {
     ...mapActions(["setCurrentItem", "setCurrentID"]),
-    validateUser() {
-      console.log("validate ?");
+    onSaveData() {
+      console.log("save data ?");
 
       this.currentItem.json_data.name = this.name;
       this.currentItem.json_data.desc = this.desc;
@@ -72,17 +74,24 @@ export default {
         json_data: JSON.stringify(this.currentItem.json_data),
       });
     },
-    onFileInput(files) {
-      console.log(files);
-      if (this.currentItem.json_data.images == undefined) {
-        this.currentItem.json_data.images = [];
+    onSelectImages(data) {
+      console.log("select");
+      console.log(data);
+      this.images_temp = data;
+    },
+    onSaveSelected() {
+      if (this.images == undefined) this.images = [];
+      for (let img of this.images_temp) {
+        this.images.push(img);
       }
-      for (let file of files) {
-        console.log(file);
-        this.currentItem.json_data.images.push(file.name);
-      }
+      // console.log(data.target);
+      this.currentItem.json_data.images = this.images;
+      this.$store.dispatch("updateItem", {
+        id: this.$route.params.id,
+        json_data: JSON.stringify(this.currentItem.json_data),
+      });
 
-      this.$store.dispatch("uploadImages", files);
+      this.isManagerOn = false;
     },
   },
   computed: {
@@ -101,5 +110,15 @@ export default {
 <style lang="scss" scoped>
 .form {
   text-align: left;
+}
+
+.layer {
+  position: absolute;
+  z-index: 200;
+  background-color: rgba(white, 0.5);
+  width: 100%;
+  left: 0;
+  padding: 1em;
+  // height: 100%;
 }
 </style>

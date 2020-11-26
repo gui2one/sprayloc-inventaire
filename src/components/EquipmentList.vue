@@ -224,10 +224,6 @@ export default {
   max-width: 1200px;
   margin: 0 auto;
 
-  .table-list {
-    // width: 95% !important;
-  }
-
   h3 {
     width: 100%;
     text-align: left;
