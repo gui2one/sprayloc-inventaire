@@ -5,6 +5,7 @@ import Login from "../views/Login.vue";
 import Profile from "../views/Profile.vue";
 import EditDetails from "../views/EditDetails.vue";
 import UploadsView from "../views/UploadsView.vue";
+import Categories from "../views/Categories.vue";
 
 Vue.use(VueRouter);
 
@@ -40,6 +41,12 @@ const routes = [
     path: "/files",
     name: "files",
     component: UploadsView,
+  },
+
+  {
+    path: "/categories",
+    name: "categories",
+    component: Categories,
   },
 ];
 

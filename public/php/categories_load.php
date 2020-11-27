@@ -5,8 +5,8 @@ if( !$conn->connect_errno){
 
 
     $str_output = "";
-    $sql = "create table IF NOT EXISTS inventaire(
-    id INT AUTO_INCREMENT, json_data JSON NOT NULL,primary key (id))";  
+    $sql = "create table IF NOT EXISTS categories(
+    id INT AUTO_INCREMENT,json_data JSON NOT NULL,primary key (id))";  
     
     if(mysqli_query($conn, $sql)){  
     // echo "Table created successfully<br>";  
@@ -16,7 +16,7 @@ if( !$conn->connect_errno){
     // var_dump($conn);
 
 
-    $sql = "select * FROM inventaire";
+    $sql = "select * FROM categories";
     $result = mysqli_query($conn, $sql);
 
 

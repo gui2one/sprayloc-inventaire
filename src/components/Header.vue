@@ -1,8 +1,8 @@
 <template>
   <div id="header" ref="header">
     <div id="nav">
-      <router-link to="/">Home</router-link> | <router-link to="/files">Files</router-link> |
-      <router-link to="/about">About</router-link> |
+      <router-link to="/">Inventaire</router-link> | <router-link to="/categories">Categories</router-link> |
+      <router-link to="/files">Files</router-link> | <router-link to="/about">About</router-link> |
       <a v-if="!$auth.isAuthenticated" @click="login">Login</a>
     </div>
     <fa-icon class="btn-icon" v-if="$auth.isAuthenticated" icon="user" size="2x" @click="toggleMenu" />

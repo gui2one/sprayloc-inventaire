@@ -10,6 +10,7 @@ export default new Vuex.Store({
     isDataLoaded: false,
     allowed_emails: allowed_emails,
     items: [],
+    categories: [],
     currentID: 0,
     currentItem: {},
     images: [],
@@ -25,6 +26,10 @@ export default new Vuex.Store({
       });
       state.items = sorted;
       // console.log("%c setItems MUTATION ", "background: darkgreen; color: white", sorted);
+    },
+
+    setCategories(state, payload) {
+      state.categories = payload;
     },
     setCurrentID(state, payload) {
       state.currentID = payload;
@@ -128,6 +133,62 @@ export default new Vuex.Store({
       context.dispatch("loadImagesFromDir");
     },
 
+    async loadMysqlCategories(context) {
+      console.log("%c Load SQL Categories ", "background: #f00; color: white");
+      const response = await fetch("/php/categories_load.php");
+      const data = await response.text();
+
+      let json_data = await JSON.parse(data);
+
+      for (let item of json_data) {
+        item.id = parseInt(item.id);
+      }
+      context.commit("setCategories", json_data);
+
+      // if (context.state.currentID != -1) {
+      //   context.commit("setCurrentItem", context.state.items.filter((value) => value.id == context.state.currentID)[0]);
+      // }
+      // context.commit("setLoaded");
+    },
+
+    async addCategorie(context, item_data) {
+      let formData = new FormData();
+      formData.append("json_data", JSON.stringify(item_data));
+      // const response =
+      await fetch("/php/categories_add.php", {
+        data: formData,
+      });
+      // const data = await response.text();
+
+      // console.log(data);
+      context.dispatch("loadMysqlCategories");
+    },
+    async removeCategory(context, item_sql_id) {
+      let formData = new FormData();
+      formData.append("id", item_sql_id);
+      // const response =
+      await fetch("/php/categories_remove.php", {
+        method: "POST",
+        body: formData,
+      });
+      // const data = await response.text();
+      // console.log(data);
+      context.dispatch("loadMysqlCategories");
+    },
+
+    async updateCategory(context, payload) {
+      console.log(payload);
+      let formData = new FormData();
+      formData.append("id", payload.id);
+      formData.append("json_data", payload.json_data);
+      // const response =
+      await fetch("/php/categories_update.php", {
+        method: "POST",
+        body: formData,
+      });
+      // const data = await response.text();
+      // console.log(data);
+    },
     async loadImagesFromDir(context) {
       const response = await fetch("/php/read_upload_dir.php", {
         method: "POST",

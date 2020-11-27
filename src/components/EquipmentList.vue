@@ -45,6 +45,9 @@
           <md-table-cell md-label="ID" md-sort-by="id">{{ item.id }}</md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="json_data.name">{{ item.json_data.name }}</md-table-cell>
           <md-table-cell md-label="Description" md-sort-by="json_data.desc">{{ item.json_data.desc }}</md-table-cell>
+          <md-table-cell md-label="Quantity" md-sort-by="json_data.quantity">{{
+            item.json_data.quantity
+          }}</md-table-cell>
 
           <md-table-cell>
             <md-button @click="onEdit(item.id)" class="md-raised md-dense md-icon-button md-primary">
@@ -217,7 +220,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #main_container {
   display: flex;
   flex-direction: column;
@@ -256,5 +259,38 @@ export default {
     // width: 150px;
     // flex-basis: max-content;
   }
+}
+.md-table-head-container {
+  // background: red !important;
+  // text-align: left;
+
+  .md-table-head-label {
+    padding-left: 20px;
+    padding-right: 0px;
+  }
+}
+.md-table-cell {
+  // display: inline-table;
+  position: relative;
+  overflow: hidden;
+  white-space: pre;
+  text-overflow: ellipsis;
+  max-width: 80px;
+  width: 80px;
+  // background-color: pink !important;
+
+  .md-table-cell-container {
+    // display: inline !important;
+    position: relative;
+    overflow: hidden;
+    white-space: pre;
+    text-overflow: ellipsis;
+    padding-left: 0px;
+    padding-right: 10px;
+  }
+}
+
+.table-list {
+  // text-align: left;
 }
 </style>

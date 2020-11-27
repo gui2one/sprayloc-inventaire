@@ -1,27 +1,38 @@
 <template>
-  <div v-if="!$auth.loading">
-    <div v-if="isManagerOn" class="layer">
+  <div>
+    <h3>
+      Edit Details for <strong>{{ currentItem.json_data.name }}</strong>
+    </h3>
+    <div v-if="isManagerOn" class="layer-manager">
       <uploadManager ref="manager" mode="popup" @select="onSelectImages" />
       <md-button class="md-raised md-primary md-dense" @click="onSaveSelected">Add Selected</md-button>
       <md-button class="md-raised md-dense" @click="isManagerOn = false">Close</md-button>
     </div>
-    <form class="form" @submit.prevent="onSaveData">
-      <div>Edit ..... {{ $route.params.id }}</div>
-
-      <md-field>
-        <label>Name</label>
-        <md-input v-model="currentItem.json_data.name"></md-input>
-      </md-field>
-      <md-field>
-        <label>Description</label>
-        <md-input v-model="currentItem.json_data.desc"></md-input>
-      </md-field>
-      <md-button class="md-raised" @click="isManagerOn = true">Add Image</md-button>
-      <ImageList :images="images" />
-      <div>
+    <div class="main-container" v-if="!$auth.loading">
+      <form class="form" @submit.prevent="onSaveData">
         <md-button type="submit" class="md-primary md-raised" :disabled="sending">Save Data</md-button>
+
+        <md-field>
+          <label>Name</label>
+          <md-input v-model="currentItem.json_data.name"></md-input>
+        </md-field>
+        <md-field>
+          <label>Description</label>
+          <md-textarea v-model="currentItem.json_data.desc"></md-textarea>
+        </md-field>
+        <md-field>
+          <label>Quantity</label>
+          <md-input v-model="currentItem.json_data.quantity" type="number"></md-input>
+        </md-field>
+        <div>
+          <md-button type="submit" class="md-primary md-raised" :disabled="sending">Save Data</md-button>
+        </div>
+      </form>
+      <div id="images">
+        <md-button class="md-raised" @click="isManagerOn = true">Add Image</md-button>
+        <ImageList :images="images" />
       </div>
-    </form>
+    </div>
   </div>
 </template>
 <script>
@@ -65,8 +76,8 @@ export default {
     onSaveData() {
       console.log("save data ?");
 
-      this.currentItem.json_data.name = this.name;
-      this.currentItem.json_data.desc = this.desc;
+      // this.currentItem.json_data.name = this.name;
+      // this.currentItem.json_data.desc = this.desc;
 
       // console.log("currentItem :", JSON.stringify(this.currentItem.json_data));
       this.$store.dispatch("updateItem", {
@@ -108,17 +119,40 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.form {
-  text-align: left;
+.main-container {
+  display: flex;
+  flex-direction: column;
 }
 
-.layer {
+#images {
+  outline: 1px solid rgba(black, 0.1);
+  min-width: 50vw;
+  background-color: rgba(black, 0.05);
+}
+.form {
+  text-align: left;
+  width: 100%;
+}
+
+.layer-manager {
   position: absolute;
   z-index: 200;
   background-color: rgba(white, 0.5);
   width: 100%;
   left: 0;
   padding: 1em;
-  // height: 100%;
+  height: 100%;
+}
+
+@media screen and (min-width: 800px) {
+  .main-container {
+    // display: flex;
+    flex-direction: row;
+  }
+
+  .form {
+    width: 50vw;
+    padding-right: 1em;
+  }
 }
 </style>
