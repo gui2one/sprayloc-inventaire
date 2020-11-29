@@ -14,6 +14,7 @@ if (isset($_POST["id"]) && isset($_POST["json_data"])) {
     $result = $conn->query($query);
 
     if ($result) {
+        echo $json_data."\n";
         echo "item updated successfully";
     }else{
         echo "problem...";

@@ -27,9 +27,9 @@ export default new Vuex.Store({
       state.items = sorted;
       // console.log("%c setItems MUTATION ", "background: darkgreen; color: white", sorted);
     },
-
     setCategories(state, payload) {
-      state.categories = payload;
+      console.log("%c Set Categories State ", "background: #0f0; color: white");
+      state.categories = payload; //.sort((A, B) => A.json_data.display_id < B.json_data.display_id);
     },
     setCurrentID(state, payload) {
       state.currentID = payload;
@@ -109,13 +109,12 @@ export default new Vuex.Store({
       let formData = new FormData();
       formData.append("id", payload.id);
       formData.append("json_data", payload.json_data);
-      // const response =
-      await fetch("/php/item_update.php", {
+      const response = await fetch("/php/item_update.php", {
         method: "POST",
         body: formData,
       });
-      // const data = await response.text();
-      // console.log(data);
+      const data = await response.text();
+      console.log(data);
     },
 
     async uploadImages(context, files) {
@@ -142,8 +141,13 @@ export default new Vuex.Store({
 
       for (let item of json_data) {
         item.id = parseInt(item.id);
+        console.log(item.json_data);
       }
-      context.commit("setCategories", json_data);
+
+      context.commit(
+        "setCategories",
+        json_data.sort((A, B) => parseInt(A.json_data.display_id) - parseInt(B.json_data.display_id))
+      );
 
       // if (context.state.currentID != -1) {
       //   context.commit("setCurrentItem", context.state.items.filter((value) => value.id == context.state.currentID)[0]);
@@ -152,6 +156,9 @@ export default new Vuex.Store({
     },
 
     async addCategorie(context, item_data) {
+      if (item_data == undefined) {
+        item_data = {};
+      }
       let formData = new FormData();
       formData.append("json_data", JSON.stringify(item_data));
       // const response =
@@ -176,18 +183,27 @@ export default new Vuex.Store({
       context.dispatch("loadMysqlCategories");
     },
 
-    async updateCategory(context, payload) {
-      console.log(payload);
+    async updateCategories(context, payload) {
+      console.log("payload : ", payload);
       let formData = new FormData();
-      formData.append("id", payload.id);
-      formData.append("json_data", payload.json_data);
-      // const response =
-      await fetch("/php/categories_update.php", {
+
+      let counter = 0;
+      console.log(payload);
+
+      formData.append("num_cats", payload.length);
+      for (let item of payload) {
+        formData.append("cat_id_" + counter, item.id);
+        formData.append("cat_json_data_" + counter, JSON.stringify(item.json_data));
+        counter++;
+      }
+
+      const response = await fetch("/php/categories_update.php", {
         method: "POST",
         body: formData,
       });
-      // const data = await response.text();
-      // console.log(data);
+      const data = await response.text();
+      console.log(data);
+      // context.dispatch("loadMysqlCategories");
     },
     async loadImagesFromDir(context) {
       const response = await fetch("/php/read_upload_dir.php", {

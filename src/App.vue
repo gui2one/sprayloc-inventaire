@@ -1,6 +1,77 @@
 <template>
   <div id="app">
-    <Header />
+    <md-toolbar class="md-primary">
+      <md-button class="md-icon-button" @click="showNavigation = true">
+        <md-icon>menu</md-icon>
+      </md-button>
+      <!-- <span class="md-title">Inventaire</span> -->
+
+      <div class="md-toolbar-section-end">
+        <md-button class="md-icon-button" @click="showSidepanel = true"><md-icon>account_circle</md-icon></md-button>
+      </div>
+    </md-toolbar>
+    <md-drawer class="md-left" :md-active.sync="showNavigation">
+      <md-toolbar class="md-transparent" md-elevation="0">
+        <span class="md-title">Inventaire</span>
+      </md-toolbar>
+
+      <md-list>
+        <router-link to="/">
+          <md-list-item @click="showNavigation = false">
+            <md-icon>home</md-icon>
+            <span class="md-list-item-text">Inventaire</span>
+          </md-list-item>
+        </router-link>
+
+        <router-link to="/categories">
+          <md-list-item @click="showNavigation = false">
+            <md-icon>category</md-icon>
+            <span class="md-list-item-text">Categories</span>
+          </md-list-item>
+        </router-link>
+
+        <router-link to="/files">
+          <md-list-item @click="showNavigation = false">
+            <md-icon>cloud_download</md-icon>
+            <span class="md-list-item-text">Files</span>
+          </md-list-item>
+        </router-link>
+
+        <router-link to="/about">
+          <md-list-item @click="showNavigation = false">
+            <md-icon>help</md-icon>
+            <span class="md-list-item-text">About</span>
+          </md-list-item>
+        </router-link>
+      </md-list>
+    </md-drawer>
+
+    <md-drawer class="md-right" :md-active.sync="showSidepanel">
+      <md-toolbar class="md-transparent" md-elevation="0">
+        <span class="md-title">User</span>
+      </md-toolbar>
+      <md-list>
+        <router-link to="/profile">
+          <md-list-item @click="showSidepanel = false">
+            <md-icon>account_circle</md-icon>
+            <span class="md-list-item-text">Infos</span>
+          </md-list-item>
+        </router-link>
+
+        <md-list-item v-if="$auth.isAuthenticated" @click="logout">
+          <md-icon>exit_to_app</md-icon>
+          <span class="md-list-item-text">Logout</span>
+        </md-list-item>
+
+        <a v-else>
+          <md-list-item @click="login">
+            <md-icon>login</md-icon>
+            <span class="md-list-item-text">Login</span>
+          </md-list-item>
+        </a>
+      </md-list>
+    </md-drawer>
+    <!-- <Header /> -->
     <div v-if="$auth.isAuthenticated" id="main-wrapper">
       <router-view />
     </div>
@@ -11,14 +82,34 @@
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
+// import Header from "@/components/Header.vue";
 import "./icons.js";
 import "./material.js";
 export default {
   name: "App",
-  components: { Header },
+  components: {},
+  data() {
+    return {
+      showNavigation: false,
+      showSidepanel: false,
+    };
+  },
   created() {
     this.$store.dispatch("loadMysqlData");
+  },
+  methods: {
+    // showNavigation() {
+    //   console.log("Navigate");
+    // },
+    login() {
+      this.$auth.loginWithRedirect();
+      this.showSidepanel = false;
+    },
+    logout() {
+      this.$auth.logout({
+        returnTo: window.location.origin,
+      });
+    },
   },
 };
 </script>
