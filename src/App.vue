@@ -16,10 +16,10 @@
       </md-toolbar>
 
       <md-list>
-        <router-link to="/">
+        <router-link to="/" class="first-link">
           <md-list-item @click="showNavigation = false">
             <md-icon>home</md-icon>
-            <span class="md-list-item-text">Inventaire</span>
+            <span class="md-list-item-text">Equipements</span>
           </md-list-item>
         </router-link>
 
@@ -72,10 +72,10 @@
       </md-list>
     </md-drawer>
     <!-- <Header /> -->
-    <div v-if="$auth.isAuthenticated" id="main-wrapper">
+    <div v-if="$auth.isAuthenticated" id="main-container">
       <router-view />
     </div>
-    <div v-else>
+    <div v-else class="spinner">
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </div>
   </div>
@@ -83,8 +83,7 @@
 
 <script>
 // import Header from "@/components/Header.vue";
-import "./icons.js";
-import "./material.js";
+
 export default {
   name: "App",
   components: {},
@@ -96,6 +95,7 @@ export default {
   },
   created() {
     this.$store.dispatch("loadMysqlData");
+    this.$store.dispatch("loadMysqlCategories");
   },
   methods: {
     // showNavigation() {
@@ -114,23 +114,28 @@ export default {
 };
 </script>
 <style lang="scss">
-html,
 body {
-  padding: 0px;
-  margin: 0;
-  box-sizing: border-box;
   overflow-x: hidden;
 }
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: $primary-color;
-}
 
-#main-wrapper {
-  // padding-top: 15px;
-  padding: 1em;
+.spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+#main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  // text-align: center;
+  max-width: 1200px;
+  padding: 0 1em;
+  margin: 1em auto;
+  // overflow: hidden;
 }
 </style>

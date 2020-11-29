@@ -158,9 +158,9 @@ router-link {
       cursor: pointer;
     }
 
-    .router-link-exact-active {
-      color: lighten($primary-color, 20%);
-    }
+    // .router-link-exact-active {
+    //   color: lighten($primary-color, 20%);
+    // }
   }
 }
 </style>

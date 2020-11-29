@@ -78,17 +78,21 @@ export default new Vuex.Store({
       context.commit("setLoaded");
     },
 
-    async addItem(context, item_data) {
+    async addItem(context) {
       let formData = new FormData();
-      formData.append("json_data", JSON.stringify(item_data));
-      // const response =
-      await fetch("/php/item_add.php", {
-        data: formData,
+      formData.append(
+        "json_data",
+        JSON.stringify({ name: "default name", desc: "default description", category: 0, quantity: 1 })
+      );
+      const response = await fetch("/php/item_add.php", {
+        method: "POST",
+        body: formData,
       });
-      // const data = await response.text();
+      const data = await response.text();
 
-      // console.log(data);
+      console.log(data);
       context.dispatch("loadMysqlData");
+      context.dispatch("loadMysqlCategories");
     },
 
     async removeItem(context, item_sql_id) {

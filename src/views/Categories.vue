@@ -9,26 +9,31 @@
       @md-cancel="onCancel"
       @md-confirm="onConfirmDelete"
     />
-    <md-dialog v-if="current" :md-active.sync="edit_modal_active">
+    <md-dialog v-if="current" :md-active.sync="edit_modal_active" :md-click-outside-to-close="false">
       <md-dialog-title>Edit Category</md-dialog-title>
       <form class="form" @submit.prevent="onSaveData">
         <md-field>
           <label>Name {{ current.id }}</label>
           <md-input v-model="current.json_data.name"></md-input>
         </md-field>
+        <div>
+          <md-button type="submit" class="md-primary md-raised" :disabled="sending">Save Data</md-button>
+        </div>
       </form>
     </md-dialog>
     <md-button class="md-icon-button" @click="onAdd"><md-icon>add</md-icon></md-button>
 
     <draggable id="draggable" v-model="sorted" tag="ul" :move="onMove" @start="onDragStart" @end="onDragEnd">
       <div v-for="cat in sorted" :key="cat.id">
-        <category-item :sql_id="cat.id" />
-        <md-button class="md-icon-button md-raised md-primary" @click="onClickEdit(cat)">
-          <md-icon>edit</md-icon>
-        </md-button>
-        <md-button class="md-icon-button md-raised md-accent" @click="onClickDelete(cat)">
-          <md-icon>delete</md-icon>
-        </md-button>
+        <md-card class="cat_item">
+          <category-item class="title" :sql_id="cat.id" />
+          <md-button class="md-icon-button md-raised md-primary md-dense" @click="onClickEdit(cat)">
+            <md-icon>edit</md-icon>
+          </md-button>
+          <md-button class="md-icon-button md-raised md-accent md-dense" @click="onClickDelete(cat)">
+            <md-icon>delete</md-icon>
+          </md-button>
+        </md-card>
       </div>
     </draggable>
   </div>
@@ -110,7 +115,11 @@ export default {
       // console.log(stringified);
       this.$store.dispatch("updateCategories", stringified);
     },
-    onSaveData() {},
+    onSaveData() {
+      // console.log("save ::::");
+      this.$store.dispatch("updateCategories", this.sorted);
+      this.edit_modal_active = false;
+    },
   },
   computed: {
     ...mapState(["categories"]),
@@ -131,4 +140,35 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+#draggable {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  align-items: flex-start;
+}
+
+ul {
+  padding: 0px;
+}
+.cat_item {
+  display: flex;
+  // flex-basis: 10;
+  // flex-grow: 10;
+  align-items: center;
+  padding: 0.33em;
+  min-width: 300px;
+  width: 100%;
+  cursor: grab;
+  // max-width: 800px;
+  margin: 0.3em auto;
+
+  .title {
+    font-size: 1.3em;
+    width: 100%;
+    text-align: left;
+    // border-bottom: 1px solid $primary-color;
+    padding-bottom: 0.3em;
+  }
+}
+</style>

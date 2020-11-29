@@ -15,9 +15,17 @@
         <md-icon v-if="view_mode == 'list'">dns</md-icon>
         <md-icon v-else>list</md-icon>
       </md-button>
-      <md-button id="add_item_button" class="md-icon-button md-primary md-raised" @click="$store.dispatch('addItem')">
+      <md-button
+        id="add_item_button"
+        class="md-icon-button md-primary md-raised"
+        @click="$store.dispatch('addItem', { id: null })"
+      >
         <md-icon size="2px">add</md-icon>
       </md-button>
+
+      <md-button class="md-raised md-accent" :disabled="delete_multiple_disabled" @click="onDeleteMultipleClick"
+        >Delete Selected</md-button
+      >
       <md-field md-clearable class="search_field">
         <md-icon>search</md-icon><md-input placeholder="Search by name..." v-model="search" @input="searchOnTable" />
       </md-field>
@@ -44,7 +52,7 @@
         <md-table-row slot="md-table-row" slot-scope="{ item }" md-selectable="multiple">
           <md-table-cell md-label="ID" md-sort-by="id">{{ item.id }}</md-table-cell>
           <md-table-cell md-label="Name" md-sort-by="json_data.name">{{ item.json_data.name }}</md-table-cell>
-          <md-table-cell md-label="Description" md-sort-by="json_data.desc">{{ item.json_data.desc }}</md-table-cell>
+          <md-table-cell md-label="Category" md-sort-by="json_data.category">{{ getItemCategory(item) }}</md-table-cell>
           <md-table-cell md-label="Quantity" md-sort-by="json_data.quantity">{{
             item.json_data.quantity
           }}</md-table-cell>
@@ -106,6 +114,8 @@ export default {
       content_height: 500,
       resize_event: null,
       handle_resize: null,
+      delete_multiple_disabled: true,
+      selected_items: [],
     };
   },
   components: { EquipmentCard },
@@ -157,17 +167,43 @@ export default {
     },
     sortByID() {},
     onSelect(selected_items) {
-      for (let item of selected_items) {
-        console.log(item.id);
+      this.selected_items = selected_items;
+
+      if (this.selected_items.length !== 0) {
+        this.delete_multiple_disabled = false;
+      } else {
+        this.delete_multiple_disabled = true;
       }
+    },
+    onDeleteMultipleClick() {
+      console.log(this.selected_items);
+      let to_delete = this.items.filter((value) => {
+        return this.selected_items.some((el) => {
+          el.id === value.id;
+        });
+      });
+      console.log(to_delete);
     },
 
     handleResize() {
       if (this.view_mode == "list") this.$refs["table-list"].fixedHeaderTableWidth = 0;
     },
+    getItemCategory(item) {
+      if (item.json_data.category == 0) {
+        return "no category";
+      } else {
+        let found = this.categories.find((value) => value.id === parseInt(item.json_data.category));
+        if (found) {
+          return found.json_data.name;
+        }
+
+        return null;
+      }
+    },
   },
   mounted() {
     this.searched = this.items;
+
     if (window.localStorage.getItem("view_mode") != undefined) {
       this.view_mode = window.localStorage.getItem("view_mode");
     }
@@ -215,7 +251,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["items"]),
+    ...mapState(["items", "categories", "currentItem"]),
   },
 };
 </script>
@@ -239,7 +275,7 @@ export default {
     .search_field {
       width: 150px;
       // display: block;
-      margin: 0 0 0 auto;
+      margin: 0 2em 0 auto;
     }
   }
 }

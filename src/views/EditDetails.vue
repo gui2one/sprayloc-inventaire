@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="back-btn">
+      <router-link to="/"
+        ><md-button><md-icon class="md-size-2x">arrow_back</md-icon></md-button></router-link
+      >
+    </div>
     <h3>
       Edit Details for <strong>{{ currentItem.json_data.name }}</strong>
     </h3>
@@ -10,8 +15,15 @@
     </div>
     <div class="main-container" v-if="!$auth.loading">
       <form class="form" @submit.prevent="onSaveData">
-        <md-button type="submit" class="md-primary md-raised" :disabled="sending">Save Data</md-button>
-
+        <!-- <div>
+          <md-button type="submit" class="md-primary md-raised" :disabled="sending">Save Data</md-button>
+        </div> -->
+        <md-field>
+          <label>Category</label>
+          <md-select v-model="currentItem.json_data.category">
+            <md-option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.json_data.name }}</md-option>
+          </md-select>
+        </md-field>
         <md-field>
           <label>Name</label>
           <md-input v-model="currentItem.json_data.name"></md-input>
@@ -46,7 +58,7 @@ export default {
     UploadManager,
   },
   data: () => {
-    UploadManager;
+    // UploadManager;
     return {
       sending: false,
       images: [],
@@ -79,6 +91,7 @@ export default {
       // this.currentItem.json_data.name = this.name;
       // this.currentItem.json_data.desc = this.desc;
 
+      this.currentItem.json_data.quantity = parseInt(this.currentItem.json_data.quantity);
       // console.log("currentItem :", JSON.stringify(this.currentItem.json_data));
       this.$store.dispatch("updateItem", {
         id: this.$route.params.id,
@@ -104,34 +117,47 @@ export default {
 
       this.isManagerOn = false;
     },
+
+    onChooseCategory(cat_id) {
+      console.log("Choose", cat_id);
+    },
   },
   computed: {
     // ...mapGetters(["getCurrentItem"]),
-    ...mapState(["items", "currentItem"]),
+    ...mapState(["items", "currentItem", "categories"]),
     name() {
       return this.$store.state.currentItem.json_data.name;
     },
     desc() {
       return this.$store.state.currentItem.json_data.desc;
     },
+    category() {
+      return this.$store.state.currentItem.json_data.category;
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.back-btn,
+h3 {
+  text-align: left;
+}
 .main-container {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
 }
 
 #images {
   outline: 1px solid rgba(black, 0.1);
-  min-width: 50vw;
+  // min-width: 50vw;
+  flex-basis: 100%;
   background-color: rgba(black, 0.05);
 }
 .form {
   text-align: left;
-  width: 100%;
+  flex-basis: 100%;
 }
 
 .layer-manager {
@@ -148,6 +174,8 @@ export default {
   .main-container {
     // display: flex;
     flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .form {
